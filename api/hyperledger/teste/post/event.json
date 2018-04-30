@@ -1,0 +1,20 @@
+{
+  "body": {
+    "game": "lol",
+    "gameType": "tournament_draft",
+    "mode": "summoners_rift",
+    "gameId": "12345",
+    "stake": "micro",
+    "stakeValue": 70.0,
+    "buyin": 63.0,
+    "rake": 7.00,
+    "money": 1,
+    "maxPlayers": 10,
+    "maxWatchers": 4,
+    "region": "br1"
+  },
+  "requestContext": {
+    "httpMethod": "POST",
+    "identity": "lambda"
+  }
+}

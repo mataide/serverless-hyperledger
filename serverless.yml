@@ -1,0 +1,95 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: serverless-hyperledger
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+frameworkVersion: ">=1.1.0 <2.0.0"
+
+provider:
+   name: aws
+   runtime: nodejs8.10
+   stage: ${self:provider.environment.STAGE}
+   region: us-east-2 # Overwrite the default region used. Default is us-east-1
+   profile: ${self:custom.profiles.${self:provider.environment.PROFILE}}
+   apiKeys:
+     - hyperledger-${self:provider.environment.STAGE}-api-key
+   usagePlan:
+     quota:
+       limit: 5000
+       offset: 0
+       period: DAY
+     throttle:
+       burstLimit: 200
+       rateLimit: 100
+   environment:
+     STAGE: ${opt:stage, self:custom.defaultStage}
+     PROFILE: ${opt:profile, self:custom.defaultProfile}
+     HOME: /tmp
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+  - serverless-plugin-split-stacks
+
+custom:
+  splitStacks:
+    perFunction: true
+    perType: false
+  individually:
+    dev: true
+    prod: true
+  defaultStage: v1
+  defaultProfile: dev
+  profiles:
+    dev: devProfile
+    prod: prodProfile
+  webpack:
+    webpackConfig: 'webpack.config.js'   # Name of webpack configuration file
+    includeModules:
+      forceInclude:
+#        - jsrsasign
+#        - composer-wallet-filesystem
+  #        - composer-runtime
+        - composer-connector-hlfv1
+      forceExclude:
+        - aws-sdk
+        - node-mailer
+    packager: 'npm'   # Packager that will be used to package your external modules
+    packagerOptions:
+      scripts:
+        - npm rebuild grpc --target=8.1.0 --target_arch=x64 --target_platform=linux --target_libc=glibc
+
+package:
+  excludeDevDependencies: true
+  individually: ${self:custom.individually.${self:provider.environment.PROFILE}}
+  exclude:
+    - .gitignore
+    - .git/**
+
+functions:
+  hyperledgerTeste:
+    description: "hyperledger teste"
+    handler: api/hyperledger/teste/handler.default
+    memorySize: 256
+    timeout: 60
+    events:
+      - http:
+          path: hyperledger/teste
+          method: POST
+          cors: true # Turn on CORS for this endpoint, but don't forget to return the right header in your response
+          private: true
+          headers:
+            - Content-Type
+            - X-Api-Key
