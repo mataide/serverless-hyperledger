@@ -16,7 +16,7 @@ module.exports = {
   },
   plugins: [],
   devtool: 'nosources-source-map',
-  externals: [nodeExternals( { whitelist: [ 'composer-client', 'composer-admin'] } ) ],
+  externals: [nodeExternals( { whitelist: [ 'composer-client', 'composer-admin', 'composer-connector-hlfv1', 'grpc'] } ) ],
   module: {
     rules: [
       {

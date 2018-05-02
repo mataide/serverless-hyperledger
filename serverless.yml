@@ -59,9 +59,7 @@ custom:
     webpackConfig: 'webpack.config.js'   # Name of webpack configuration file
     includeModules:
       forceInclude:
-#        - jsrsasign
-#        - composer-wallet-filesystem
-  #        - composer-runtime
+        - composer-wallet-filesystem
         - composer-connector-hlfv1
       forceExclude:
         - aws-sdk
