@@ -1,7 +1,7 @@
 'use strict'
 
 import { Api } from '../../../../lib/response'
-const Match = require('../../../../lib/match')
+const Match = require('../../../../model/match')
 // const Util = require('../../../lib/util')
 
 // Multi - Create''

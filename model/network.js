@@ -25,27 +25,22 @@ const AdminConnection = require('composer-admin').AdminConnection;
 const BusinessNetworkCardStore = require('composer-common').BusinessNetworkCardStore;
 const IdCard = require('composer-common').IdCard;
 
-// const credentials = require('../credentials.json')
+const credentials = require('../credentials.json')
 const constants = {
   // resources
   STAGE: process.env.STAGE,
   PROFILE: process.env.PROFILE
 }
 
-// these are the credentials to use to connect to the Hyperledger Fabric
-let cardname = 'admin@proak-hyperledger-network';
-
-const NS = 'com.emastersapp';
-
 /** Class for the Match*/
-class Match {
+class Network {
 
   /**
    * Need to have the mapping from bizNetwork name to the URLs to connect to.
    * bizNetwork nawme will be able to be used by Composer to get the suitable model files.
    *
    */
-  constructor(cardName) {
+  constructor() {
     this.bizNetworkConnection = new BusinessNetworkConnection();
     this.adminConnection = new AdminConnection();
     this.businessNetworkCardStore = new BusinessNetworkCardStore();
@@ -55,11 +50,9 @@ class Match {
    * @description Initalizes the LandRegsitry by making a connection to the Composer runtime
    * @return {Promise} A promise whose fullfillment means the initialization has completed
    */
-  async init() {
-    // console.log(credentials[constants.PROFILE]['hyperledger']['metadata'])
-    // console.log(credentials[constants.PROFILE]['hyperledger']['connection'])
+  async ping() {
 
-    const idCardData = new IdCard("metadata", "connection");
+    const idCardData = new IdCard(credentials[constants.PROFILE]['hyperledger']['metadata'], credentials[constants.PROFILE]['hyperledger']['connection']);
 
     const idCardName = BusinessNetworkCardStore.getDefaultCardName(idCardData);
     try{
@@ -70,7 +63,8 @@ class Match {
           console.log("Error in network connection");
           throw "Error in network connection";
         }
-        return this.businessNetworkDefinition;
+        let result = await this.businessNetworkDefinition.ping();
+        return result
       } else {
         console.log('null');
         throw "Error in importing card";
@@ -79,46 +73,14 @@ class Match {
       console.log(error);
       throw error;
     }
-    //this.businessNetworkDefinition = await this.bizNetworkConnection.connect(`admin@proak-hyperledger-network`);
-    //console.log('LandRegistry:<init>', 'businessNetworkDefinition obtained', this.businessNetworkDefinition.getIdentifier());
   }
 
-  /**
-   * Updates a fixes asset for selling..
-   * @return {Promise} resolved when this update has completed
-   */
-  async registerRoom(room) {
-    const METHOD = 'RegisterNewSitnGo';
-    let factory        = this.businessNetworkDefinition.getFactory();
-    let transaction    = factory.newTransaction(NS,'RegisterNewSitnGo');
-    transaction.game = room.game
-    transaction.mode = room.mode
-    transaction.gameType = room.gameType
-    transaction.stake = room.stake
-    transaction.money = room.money
-    transaction.stakeValue = room.stakeValue
-    transaction.buyin = room.buyin
-    transaction.rake = room.rake
-    transaction.maxPlayers = room.maxPlayers
-    transaction.maxWatchers = room.maxWatchers
-    transaction.gameId = room.gameId
-    transaction.region = room.region
-
-    console.log(METHOD, 'Submitting transaction');
-    await this.bizNetworkConnection.submitTransaction(transaction);
+  static async ping() {
+    let network = new Network();
+    let results = await network.ping();
+    return results
   }
 
-  /**
-   * @description - run the listtiles command
-   * @param {Object} args passed from the command line
-   * @return {Promise} resolved when the action is complete
-   */
-  static async registerRoom(json) {
-    let match = new Match('admin');
-    await match.init();
-    let results = await match.registerRoom(json);
-    console.log('Transaction Submitted');
-    console.log(results);
-  }
+
 }
-module.exports = Match;
+module.exports = Network;

@@ -91,3 +91,18 @@ functions:
           headers:
             - Content-Type
             - X-Api-Key
+
+  networkPing:
+    description: "Network Ping"
+    handler: api/network/ping/handler.default
+    memorySize: 256
+    timeout: 60
+    events:
+      - http:
+          path: network/ping
+          method: GET
+          cors: true # Turn on CORS for this endpoint, but don't forget to return the right header in your response
+          private: true
+          headers:
+            - Content-Type
+            - X-Api-Key
