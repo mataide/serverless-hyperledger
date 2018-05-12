@@ -12,11 +12,7 @@
  * limitations under the License.
  */
 
-// This is a simple sample that will demonstrate how to use the
-// API connecting to a HyperLedger Blockchain Fabric
-//
-// The scenario here is using a simple model of a participant of 'Student'
-// and a 'Test' and 'Result'  assets.
+// This is a model to Network Actions
 
 'use strict';
 
@@ -25,14 +21,8 @@ const AdminConnection = require('composer-admin').AdminConnection;
 const BusinessNetworkCardStore = require('composer-common').BusinessNetworkCardStore;
 const IdCard = require('composer-common').IdCard;
 
-const credentials = require('../credentials.json')
-const constants = {
-  // resources
-  STAGE: process.env.STAGE,
-  PROFILE: process.env.PROFILE
-}
 
-/** Class for the Match*/
+/** Class for the Network*/
 class Network {
 
   /**
@@ -40,10 +30,10 @@ class Network {
    * bizNetwork nawme will be able to be used by Composer to get the suitable model files.
    *
    */
-  constructor() {
+  constructor(credentials) {
     this.bizNetworkConnection = new BusinessNetworkConnection();
     this.adminConnection = new AdminConnection();
-    this.businessNetworkCardStore = new BusinessNetworkCardStore();
+    this.credentials = credentials
   }
 
   /**
@@ -52,7 +42,7 @@ class Network {
    */
   async ping() {
 
-    const idCardData = new IdCard(credentials[constants.PROFILE]['hyperledger']['metadata'], credentials[constants.PROFILE]['hyperledger']['connection']);
+    const idCardData = new IdCard(this.credentials['metadata'], this.credentials['connection']);
 
     const idCardName = BusinessNetworkCardStore.getDefaultCardName(idCardData);
     try{
@@ -73,12 +63,6 @@ class Network {
       console.log(error);
       throw error;
     }
-  }
-
-  static async ping() {
-    let network = new Network();
-    let results = await network.ping();
-    return results
   }
 
 

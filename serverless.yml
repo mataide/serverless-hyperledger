@@ -81,7 +81,7 @@ functions:
     description: "hyperledger teste"
     handler: api/hyperledger/teste/handler.default
     memorySize: 256
-    timeout: 60
+    timeout: 30
     events:
       - http:
           path: hyperledger/teste
@@ -96,7 +96,7 @@ functions:
     description: "Network Ping"
     handler: api/network/ping/handler.default
     memorySize: 256
-    timeout: 60
+    timeout: 30
     events:
       - http:
           path: network/ping
