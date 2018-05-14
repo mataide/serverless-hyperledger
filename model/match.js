@@ -61,20 +61,20 @@ class Match {
 
     const idCardData = new IdCard(credentials[constants.PROFILE]['hyperledger']['metadata'], credentials[constants.PROFILE]['hyperledger']['connection']);
 
-    const idCardName = BusinessNetworkCardStore.getDefaultCardName(idCardData);
+    // const idCardName = BusinessNetworkCardStore.getDefaultCardName(idCardData);
     try{
-      const imported = await this.adminConnection.importCard(idCardName, idCardData);
-      if (imported) {
-        this.businessNetworkDefinition = await this.bizNetworkConnection.connect(idCardName);
+      // const imported = await this.adminConnection.importCard(idCardName, idCardData);
+      // if (imported) {
+        this.businessNetworkDefinition = await this.bizNetworkConnection.connect(`admin@proak-hyperledger-network`);
         if (!this.businessNetworkDefinition) {
           console.log("Error in network connection");
           throw "Error in network connection";
         }
         return this.businessNetworkDefinition;
-      } else {
-        console.log('null');
-        throw "Error in importing card";
-      }
+      // } else {
+      //   console.log('null');
+      //   throw "Error in importing card";
+      // }
     }catch(error){
       console.log(error);
       throw error;

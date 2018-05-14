@@ -18,10 +18,11 @@
   "homepage": "https://github.com/mataide/serverless-hyperledger#readme",
   "dependencies": {
     "ajv": "^6.4.0",
-    "composer-admin": "^0.18.1",
-    "composer-client": "^0.18.1",
-    "composer-connector-hlfv1": "^0.18.1",
-    "grpc": "^1.10.1",
+    "composer-admin": "^0.19.4",
+    "composer-client": "^0.19.4",
+    "composer-common": "^0.19.4",
+    "composer-connector-hlfv1": "^0.19.4",
+    "ncp": "^2.0.0",
     "source-map-support": "^0.5.5"
   },
   "devDependencies": {
@@ -33,6 +34,7 @@
     "babel-plugin-source-map-support": "^2.0.1",
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-2": "^6.24.1",
+    "copy-webpack-plugin": "^4.5.1",
     "serverless-offline": "^3.20.3",
     "serverless-plugin-split-stacks": "^1.4.1",
     "serverless-webpack": "^5.1.3",

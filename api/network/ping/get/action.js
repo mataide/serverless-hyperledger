@@ -2,25 +2,23 @@
 
 const Network = require('../../../../model/network')
 import { Api } from '../../../../lib/response'
-const credentials = require('../credentials.json')
-const constants = {
-  // resources
-  STAGE: process.env.STAGE,
-  PROFILE: process.env.PROFILE
-}
+var ncp = require('ncp').ncp;
 
 // Multi - Create''
 export function respond (event, cb) {
 
-  let cred = {}
-  cred['metadata'] = credentials[constants.PROFILE]['hyperledger']['metadata']
-  cred['connection'] = credentials[constants.PROFILE]['hyperledger']['connection']
-
-  let network = new Network(cred)
-  network.ping().then(result => {
-    return cb(null, Api.response(result))
-  }).catch(err => {
-    return cb(null, Api.errors(200, {5: err['message']}))
-  })
+  ncp.limit = 16;
+  ncp('.composer', '/tmp/.composer', function (err) {
+    if (err) {
+      return cb(null, Api.errors(200, {5: err['message']}))
+    }
+    console.log('done!');
+    let network = new Network()
+    network.ping().then(result => {
+      return cb(null, Api.response(result))
+    }).catch(err => {
+      return cb(null, Api.errors(200, {5: err['message']}))
+    })
+  });
 }
 

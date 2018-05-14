@@ -17,10 +17,6 @@
 'use strict';
 
 const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
-const AdminConnection = require('composer-admin').AdminConnection;
-const BusinessNetworkCardStore = require('composer-common').BusinessNetworkCardStore;
-const IdCard = require('composer-common').IdCard;
-
 
 /** Class for the Network*/
 class Network {
@@ -30,10 +26,28 @@ class Network {
    * bizNetwork nawme will be able to be used by Composer to get the suitable model files.
    *
    */
-  constructor(credentials) {
-    this.bizNetworkConnection = new BusinessNetworkConnection();
-    this.adminConnection = new AdminConnection();
-    this.credentials = credentials
+  constructor() {
+    let connectionOptions = {}
+    if(process.env.LAMBDA_TASK_ROOT) {
+      connectionOptions = {
+        wallet : {
+          type: 'composer-wallet-filesystem',
+          options : {
+            namePrefix : '/tmp/.composer'
+          }
+        }
+      };
+    } else {
+      connectionOptions = {
+        wallet : {
+          type: 'composer-wallet-filesystem',
+          options : {
+            storePath : process.cwd() + '/.composer'
+          }
+        }
+      };
+    }
+    this.bizNetworkConnection = new BusinessNetworkConnection(connectionOptions);
   }
 
   /**
@@ -41,30 +55,19 @@ class Network {
    * @return {Promise} A promise whose fullfillment means the initialization has completed
    */
   async ping() {
-
-    const idCardData = new IdCard(this.credentials['metadata'], this.credentials['connection']);
-
-    const idCardName = BusinessNetworkCardStore.getDefaultCardName(idCardData);
     try{
-      const imported = await this.adminConnection.importCard(idCardName, idCardData);
-      if (imported) {
-        this.businessNetworkDefinition = await this.bizNetworkConnection.connect(idCardName);
+        this.businessNetworkDefinition = await this.bizNetworkConnection.connect('admin@proak-hyperledger-network');
         if (!this.businessNetworkDefinition) {
           console.log("Error in network connection");
           throw "Error in network connection";
         }
-        let result = await this.businessNetworkDefinition.ping();
+        let result = await this.bizNetworkConnection.ping();
         return result
-      } else {
-        console.log('null');
-        throw "Error in importing card";
-      }
     }catch(error){
       console.log(error);
       throw error;
     }
   }
-
 
 }
 module.exports = Network;
