@@ -17,6 +17,7 @@
 'use strict';
 
 const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
+const cardname = 'admin@proak-hyperledger-network';
 
 /** Class for the Network*/
 class Network {
@@ -33,7 +34,7 @@ class Network {
         wallet : {
           type: 'composer-wallet-filesystem',
           options : {
-            namePrefix : '/tmp/.composer'
+            storePath : '/tmp/.composer'
           }
         }
       };
@@ -56,13 +57,12 @@ class Network {
    */
   async ping() {
     try{
-        this.businessNetworkDefinition = await this.bizNetworkConnection.connect('admin@proak-hyperledger-network');
+        this.businessNetworkDefinition = await this.bizNetworkConnection.connect(cardname);
         if (!this.businessNetworkDefinition) {
           console.log("Error in network connection");
           throw "Error in network connection";
         }
-        let result = await this.bizNetworkConnection.ping();
-        return result
+        return await this.bizNetworkConnection.ping();
     }catch(error){
       console.log(error);
       throw error;

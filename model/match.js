@@ -21,16 +21,6 @@
 'use strict';
 
 const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
-const AdminConnection = require('composer-admin').AdminConnection;
-const BusinessNetworkCardStore = require('composer-common').BusinessNetworkCardStore;
-const IdCard = require('composer-common').IdCard;
-
-const credentials = require('../credentials.json')
-const constants = {
-  // resources
-  STAGE: process.env.STAGE,
-  PROFILE: process.env.PROFILE
-}
 
 // these are the credentials to use to connect to the Hyperledger Fabric
 let cardname = 'admin@proak-hyperledger-network';
@@ -45,10 +35,28 @@ class Match {
    * bizNetwork nawme will be able to be used by Composer to get the suitable model files.
    *
    */
-  constructor(cardName) {
-    this.bizNetworkConnection = new BusinessNetworkConnection();
-    this.adminConnection = new AdminConnection();
-    this.businessNetworkCardStore = new BusinessNetworkCardStore();
+  constructor() {
+    let connectionOptions = {}
+    if(process.env.LAMBDA_TASK_ROOT) {
+      connectionOptions = {
+        wallet : {
+          type: 'composer-wallet-filesystem',
+          options : {
+            namePrefix : '/tmp/.composer'
+          }
+        }
+      };
+    } else {
+      connectionOptions = {
+        wallet : {
+          type: 'composer-wallet-filesystem',
+          options : {
+            storePath : process.cwd() + '/.composer'
+          }
+        }
+      };
+    }
+    this.bizNetworkConnection = new BusinessNetworkConnection(connectionOptions);
   }
 
   /**
@@ -56,31 +64,17 @@ class Match {
    * @return {Promise} A promise whose fullfillment means the initialization has completed
    */
   async init() {
-    // console.log(credentials[constants.PROFILE]['hyperledger']['metadata'])
-    // console.log(credentials[constants.PROFILE]['hyperledger']['connection'])
-
-    const idCardData = new IdCard(credentials[constants.PROFILE]['hyperledger']['metadata'], credentials[constants.PROFILE]['hyperledger']['connection']);
-
-    // const idCardName = BusinessNetworkCardStore.getDefaultCardName(idCardData);
     try{
-      // const imported = await this.adminConnection.importCard(idCardName, idCardData);
-      // if (imported) {
-        this.businessNetworkDefinition = await this.bizNetworkConnection.connect(`admin@proak-hyperledger-network`);
-        if (!this.businessNetworkDefinition) {
-          console.log("Error in network connection");
-          throw "Error in network connection";
-        }
-        return this.businessNetworkDefinition;
-      // } else {
-      //   console.log('null');
-      //   throw "Error in importing card";
-      // }
+      this.businessNetworkDefinition = await this.bizNetworkConnection.connect(cardname);
+      if (!this.businessNetworkDefinition) {
+        console.log("Error in network connection");
+        throw "Error in network connection";
+      }
+      return this.businessNetworkDefinition
     }catch(error){
       console.log(error);
       throw error;
     }
-    //this.businessNetworkDefinition = await this.bizNetworkConnection.connect(`admin@proak-hyperledger-network`);
-    //console.log('LandRegistry:<init>', 'businessNetworkDefinition obtained', this.businessNetworkDefinition.getIdentifier());
   }
 
   /**
@@ -114,7 +108,7 @@ class Match {
    * @return {Promise} resolved when the action is complete
    */
   static async registerRoom(json) {
-    let match = new Match('admin');
+    let match = new Match();
     await match.init();
     let results = await match.registerRoom(json);
     console.log('Transaction Submitted');
