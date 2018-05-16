@@ -1,0 +1,27 @@
+{
+  "name": "composer-serverless",
+  "version": "0.1.0",
+  "description": "Composer Serverless Core Models",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://mataide@github.com/mataide/serverless-hyperledger.git"
+  },
+  "keywords": [
+    "blockchain",
+    "hyperledger",
+    "serverless"
+  ],
+  "author": "Marcus Ataide",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mataide/serverless-hyperledger/issues"
+  },
+  "homepage": "https://github.com/mataide/serverless-hyperledger#readme",
+  "dependencies": {
+    "composer-client": "^0.19.5"
+  }
+}

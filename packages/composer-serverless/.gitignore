@@ -59,4 +59,6 @@ typings/
 
 .serverless
 .idea
-.composer
+
+# Mac files.
+**/.DS_Store

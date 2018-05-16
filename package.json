@@ -18,9 +18,7 @@
   "homepage": "https://github.com/mataide/serverless-hyperledger#readme",
   "dependencies": {
     "ajv": "^6.4.0",
-    "composer-admin": "^0.19.5",
     "composer-client": "^0.19.5",
-    "composer-common": "^0.19.4",
     "composer-connector-hlfv1": "^0.19.5",
     "ncp": "^2.0.0",
     "source-map-support": "^0.5.5"

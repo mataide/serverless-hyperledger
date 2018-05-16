@@ -17,7 +17,12 @@
 'use strict';
 
 const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
-const cardname = 'admin@proak-hyperledger-network';
+const constants = {
+  // resources
+  NETWORK: process.env.NETWORK,
+  CARDNAME: process.env.CARDNAME,
+  LAMBDA_TASK_ROOT: process.env.LAMBDA_TASK_ROOT
+}
 
 /** Class for the Network*/
 class Network {
@@ -27,9 +32,9 @@ class Network {
    * bizNetwork nawme will be able to be used by Composer to get the suitable model files.
    *
    */
-  constructor() {
+  constructor(network, cardname) {
     let connectionOptions = {}
-    if(process.env.LAMBDA_TASK_ROOT) {
+    if(constants.LAMBDA_TASK_ROOT) {
       connectionOptions = {
         wallet : {
           type: 'composer-wallet-filesystem',
@@ -49,6 +54,26 @@ class Network {
       };
     }
     this.bizNetworkConnection = new BusinessNetworkConnection(connectionOptions);
+
+    this.network = network
+
+    if(constants.NETWORK) {
+      this.network = constants.NETWORK
+    }
+
+    if (typeof this.network === 'undefined') {
+      throw new Error('network is undefined');
+    }
+
+    this.cardname = cardname
+
+    if(constants.CARDNAME) {
+      this.cardname = constants.CARDNAME
+    }
+
+    if (typeof this.cardname === 'undefined') {
+      throw new Error('cardname is undefined');
+    }
   }
 
   /**
@@ -57,7 +82,7 @@ class Network {
    */
   async ping() {
     try{
-        this.businessNetworkDefinition = await this.bizNetworkConnection.connect(cardname);
+        this.businessNetworkDefinition = await this.bizNetworkConnection.connect(this.cardname);
         if (!this.businessNetworkDefinition) {
           console.log("Error in network connection");
           throw "Error in network connection";

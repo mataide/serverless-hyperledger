@@ -1,0 +1,8 @@
+{
+  "body": {
+  },
+  "requestContext": {
+    "httpMethod": "GET",
+    "identity": "lambda"
+  }
+}

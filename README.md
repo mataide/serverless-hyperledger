@@ -7,6 +7,7 @@ Serverless Hyperledger
 
 ## <a name="features"></a>Features
 
+* Suports AWS Lambda
 * Websocket - Doesn't work in Lambda, so this function will not be added in the future.
 * API key - It is handled by API Gateway, you only need to provide `private: true` to every function.
 * Authentication - It is handled by API Gateway, you only need to provide `authorizer:` to every function.
