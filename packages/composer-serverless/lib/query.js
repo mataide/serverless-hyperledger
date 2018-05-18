@@ -80,14 +80,14 @@ class Query {
    * @description Initalizes the LandRegsitry by making a connection to the Composer runtime
    * @return {Promise} A promise whose fullfillment means the initialization has completed
    */
-  async get(assetId, value) {
+  async get(asset, assetId, value) {
     try{
         this.businessNetworkDefinition = await this.bizNetworkConnection.connect(this.cardname);
         if (!this.businessNetworkDefinition) {
           console.log("Error in network connection");
           throw "Error in network connection";
         }
-        const query = this.bizNetworkConnection.buildQuery(`SELECT ${this.network} WHERE (${assetId} == _$inputValue)`);
+        const query = this.bizNetworkConnection.buildQuery(`SELECT ${this.network}.${asset} WHERE (${assetId} == _$inputValue)`);
         return await this.bizNetworkConnection.query(query, { inputValue: value })
     }catch(error){
       console.log(error);
