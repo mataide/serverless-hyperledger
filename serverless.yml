@@ -106,6 +106,7 @@ functions:
           headers:
             - Content-Type
             - X-Api-Key
+
   transactionSubmit:
     description: "Transaction Submit"
     handler: api/transaction/submit/handler.default

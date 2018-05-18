@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-// This is a model to Transaction Actions
+// This is a model to Query Actions
 
 'use strict';
 
@@ -24,8 +24,8 @@ const constants = {
   LAMBDA_TASK_ROOT: process.env.LAMBDA_TASK_ROOT
 }
 
-/** Class for the Transaction*/
-class Transaction {
+/** Class for the Query*/
+class Query {
 
   /**
    * Need to have the mapping from bizNetwork name to the URLs to connect to.
@@ -76,24 +76,37 @@ class Transaction {
     }
   }
 
+  /**
+   * @description Initalizes the LandRegsitry by making a connection to the Composer runtime
+   * @return {Promise} A promise whose fullfillment means the initialization has completed
+   */
+  async get(assetId, value) {
+    try{
+        this.businessNetworkDefinition = await this.bizNetworkConnection.connect(this.cardname);
+        if (!this.businessNetworkDefinition) {
+          console.log("Error in network connection");
+          throw "Error in network connection";
+        }
+        const query = this.bizNetworkConnection.buildQuery(`SELECT ${this.network} WHERE (${assetId} == _$inputValue)`);
+        return await this.bizNetworkConnection.query(query, { inputValue: value })
+    }catch(error){
+      console.log(error);
+      throw error;
+    }
+  }
 
   /**
    * @description Initalizes the LandRegsitry by making a connection to the Composer runtime
    * @return {Promise} A promise whose fullfillment means the initialization has completed
    */
-  async submit(resource, method) {
+  async queryByResource(resource, value) {
     try{
       this.businessNetworkDefinition = await this.bizNetworkConnection.connect(this.cardname);
       if (!this.businessNetworkDefinition) {
         console.log("Error in network connection");
         throw "Error in network connection";
       }
-
-      let factory        = this.businessNetworkDefinition.getFactory();
-      let transaction    = factory.newTransaction(this.network, method);
-
-      Object.assign(transaction, resource)
-      return await this.bizNetworkConnection.submitTransaction(transaction);
+      return await this.bizNetworkConnection.query(resource, { inputValue: value })
     }catch(error){
       console.log(error);
       throw error;
@@ -101,4 +114,4 @@ class Transaction {
   }
 
 }
-module.exports = Transaction;
+module.exports = Query;
