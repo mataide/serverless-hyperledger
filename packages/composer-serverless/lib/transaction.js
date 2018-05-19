@@ -92,12 +92,27 @@ class Transaction {
       let factory        = this.businessNetworkDefinition.getFactory();
       let transaction    = factory.newTransaction(this.network, method);
 
+      //For Concept Objects add Key Ex. {$concept: "<Asset Name>"}
+      Object.entries(resource).map((key, value) => {
+        if(this.isObject(key[1])) {
+          if(key[1].$concept) {
+            let concept = factory.newConcept(this.network, key[1].$concept);
+            delete key[1].$concept
+            Object.assign(concept, key[1])
+            resource[key[0]] = concept
+          }
+        }
+      });
       Object.assign(transaction, resource)
       return await this.bizNetworkConnection.submitTransaction(transaction);
     }catch(error){
       console.log(error);
       throw error;
     }
+  }
+
+  isObject(o) {
+    return o !== null && typeof o === 'object' && Array.isArray(o) === false;
   }
 
 }
