@@ -99,14 +99,14 @@ class Query {
    * @description Initalizes the LandRegsitry by making a connection to the Composer runtime
    * @return {Promise} A promise whose fullfillment means the initialization has completed
    */
-  async queryByResource(resource, value) {
+  async queryByResource(resource, filter) {
     try{
       this.businessNetworkDefinition = await this.bizNetworkConnection.connect(this.cardname);
       if (!this.businessNetworkDefinition) {
         console.log("Error in network connection");
         throw "Error in network connection";
       }
-      return await this.bizNetworkConnection.query(resource, { inputValue: value })
+      return await this.bizNetworkConnection.query(resource, filter)
     }catch(error){
       console.log(error);
       throw error;
