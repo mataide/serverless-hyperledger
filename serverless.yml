@@ -64,6 +64,7 @@ custom:
       forceExclude:
         - aws-sdk
         - node-mailer
+        - composer-wallet-inmemory
     packager: 'npm'   # Packager that will be used to package your external modules
     packagerOptions:
       scripts:
