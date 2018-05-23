@@ -37,16 +37,16 @@ class Transaction {
     if(constants.LAMBDA_TASK_ROOT) {
       connectionOptions = {
         wallet : {
-          type: 'composer-wallet-filesystem',
+          type: 'composer-serverless-wallet',
           options : {
-            storePath : '/tmp/.composer'
+            storePath : '/.composer'
           }
         }
       };
     } else {
       connectionOptions = {
         wallet : {
-          type: 'composer-wallet-filesystem',
+          type: 'composer-serverless-wallet',
           options : {
             storePath : process.cwd() + '/.composer'
           }
@@ -113,13 +113,7 @@ class Transaction {
       }
       actions.push(this.bizNetworkConnection.submitTransaction(transaction))
 
-      Promise.all(actions).then(data => {
-        console.log(data)
-        return data
-      }).catch(err => {
-        console.log(err)
-        return err
-      })
+      await Promise.all(actions)
     }catch(error){
       console.log(error);
       throw error;
