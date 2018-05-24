@@ -20,7 +20,7 @@
     "ajv": "^6.4.0",
     "composer-client": "^0.19.5",
     "composer-connector-hlfv1": "https://github.com/mataide/composer-connector-hlfv1/tarball/master",
-    "ncp": "^2.0.0",
+    "composer-serverless": "^0.1.9",
     "source-map-support": "^0.5.5"
   },
   "devDependencies": {

@@ -37,16 +37,16 @@ class Network {
     if(constants.LAMBDA_TASK_ROOT) {
       connectionOptions = {
         wallet : {
-          type: 'composer-serverless-wallet',
+          type: 'composer-wallet-serverless',
           options : {
-            storePath : '/.composer'
+            storePath : constants.LAMBDA_TASK_ROOT + '/.composer'
           }
         }
       };
     } else {
       connectionOptions = {
         wallet : {
-          type: 'composer-serverless-wallet',
+          type: 'composer-wallet-serverless',
           options : {
             storePath : process.cwd() + '/.composer'
           }

@@ -1,6 +1,6 @@
 {
   "name": "composer-serverless",
-  "version": "0.1.6",
+  "version": "0.2.1",
   "description": "Composer Serverless Core Models",
   "engines": {
     "node": ">=8",
@@ -27,6 +27,6 @@
   "homepage": "https://github.com/mataide/serverless-hyperledger#readme",
   "dependencies": {
     "composer-client": "^0.19.5",
-    "composer-serverless-wallet": "^0.1.7"
+    "composer-wallet-serverless": "^0.2.2"
   }
 }

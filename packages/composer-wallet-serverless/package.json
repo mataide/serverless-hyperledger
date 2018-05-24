@@ -1,6 +1,6 @@
 {
-  "name": "composer-serverless-wallet",
-  "version": "0.1.7",
+  "name": "composer-wallet-serverless",
+  "version": "0.2.2",
   "description": "The Hyperledger Fabric v1.x Node.JS runtime container for Hyperledger Composer",
   "engines": {
     "node": ">=8",

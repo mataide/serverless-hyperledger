@@ -37,6 +37,8 @@ provider:
      STAGE: ${opt:stage, self:custom.defaultStage}
      PROFILE: ${opt:profile, self:custom.defaultProfile}
      HOME: /tmp
+     NETWORK: com.emastersapp
+     CARDNAME: admin@proak-hyperledger-network
 
 plugins:
   - serverless-webpack
@@ -59,11 +61,12 @@ custom:
     webpackConfig: 'webpack.config.js'   # Name of webpack configuration file
     includeModules:
       forceInclude:
-        - composer-wallet-filesystem
+        - composer-wallet-serverless
         - composer-connector-hlfv1
       forceExclude:
         - aws-sdk
         - node-mailer
+        - composer-wallet-filesystem
         - composer-wallet-inmemory
     packager: 'npm'   # Packager that will be used to package your external modules
     packagerOptions:

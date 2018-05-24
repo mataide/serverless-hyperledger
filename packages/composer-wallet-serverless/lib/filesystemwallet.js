@@ -19,7 +19,6 @@ const nodefs = require('fs');
 const path = require('path');
 const util = require('util');
 const composerUtil = require('composer-common').Util;
-const mkdirp = require('mkdirp');
 const IdCard = require('composer-common').IdCard;
 const rimraf = util.promisify(require('rimraf'));
 /**
@@ -48,12 +47,13 @@ class FileSystemWallet extends Wallet{
      * @return {boolean} true if directory, false otherwise
      */
     _isDirectory(name){
+        this._stat = util.promisify(this.fs.stat);
         return this._stat(this._path(name))
         .then(status=>{
             return status.isDirectory();
         });
-
     }
+
     /**
      * @param {Object} options  Configuration options
      * @param {Object} options.storePath  The root directory where this wallet can put things
@@ -66,7 +66,6 @@ class FileSystemWallet extends Wallet{
         this.storePath = path.join(root,options.namePrefix);
 
         this.fs = options.fs || nodefs;
-        mkdirp.sync(this.storePath,{fs:this.fs});
 
         this.rimrafOptions = Object.assign({}, this.fs);
         this.rimrafOptions.disableGlob = true;
