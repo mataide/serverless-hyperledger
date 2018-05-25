@@ -82,7 +82,6 @@ class Transaction {
    * @return {Promise} A promise whose fullfillment means the initialization has completed
    */
   async submit(resource, method, event) {
-    try{
       this.businessNetworkDefinition = await this.bizNetworkConnection.connect(this.cardname);
       if (!this.businessNetworkDefinition) {
         console.log("Error in network connection");
@@ -113,17 +112,7 @@ class Transaction {
       }
       actions.push(this.bizNetworkConnection.submitTransaction(transaction))
 
-      Promise.all(actions).then(data => {
-        console.log(data)
-        return data
-      }).catch(err => {
-        console.log(err)
-        return err
-      })
-    }catch(error){
-      console.log(error);
-      throw error;
-    }
+      await Promise.all(actions)
   }
 
   listener (event) {
