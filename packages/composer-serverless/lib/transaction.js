@@ -81,7 +81,7 @@ class Transaction {
    * @description Initalizes the LandRegsitry by making a connection to the Composer runtime
    * @return {Promise} A promise whose fullfillment means the initialization has completed
    */
-  async submit(resource, method, event) {
+  async submit(resource, method) {
       this.businessNetworkDefinition = await this.bizNetworkConnection.connect(this.cardname);
       if (!this.businessNetworkDefinition) {
         console.log("Error in network connection");
@@ -104,23 +104,8 @@ class Transaction {
       });
       Object.assign(transaction, resource)
 
-      let actions = []
-
-      //Event Listener
-      if(event) {
-        actions.push(this.listener(event))
-      }
-      actions.push(this.bizNetworkConnection.submitTransaction(transaction))
-
-      await Promise.all(actions)
-  }
-
-  listener (event) {
-    return new Promise((resolve, reject) => {
-      this.bizNetworkConnection.on(event, (ev) => {
-        resolve(ev)
-      });
-    })
+      const concept = await this.bizNetworkConnection.submitTransaction(transaction)
+      return concept
   }
 
   isObject(o) {
