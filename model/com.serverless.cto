@@ -1,0 +1,14 @@
+/**
+ * Write your model definitions here
+ */
+
+namespace com.serverless
+
+/**
+ * Wallet participant identified by userId
+ */
+participant Wallet identified by userId {
+  o String userId
+  o Double money
+  o Double ticket
+}
