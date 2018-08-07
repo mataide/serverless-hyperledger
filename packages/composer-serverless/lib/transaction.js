@@ -37,16 +37,16 @@ class Transaction {
     if(constants.LAMBDA_TASK_ROOT) {
       connectionOptions = {
         wallet : {
-          type: 'composer-wallet-filesystem',
+          type: 'composer-wallet-serverless',
           options : {
-            storePath : '/tmp/.composer'
+            storePath : '.composer'
           }
         }
       };
     } else {
       connectionOptions = {
         wallet : {
-          type: 'composer-wallet-filesystem',
+          type: 'composer-wallet-serverless',
           options : {
             storePath : process.cwd() + '/.composer'
           }

@@ -60,3 +60,5 @@ typings/
 .serverless
 .idea
 .composer
+cards
+client-data

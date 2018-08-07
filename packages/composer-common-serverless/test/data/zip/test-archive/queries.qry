@@ -1,0 +1,47 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+query Q1 {
+    description: "Select all Farmers"
+    statement: SELECT com.composer.Farmer
+} query Q2 { // test missing whitespace
+    description: "Select all regulators"
+    statement: SELECT com.composer.Regulator FROM mycustomer.Registry
+}
+
+query Q3 {
+    description: "Select all transactions"
+    statement: SELECT com.composer.AnimalMovement
+}
+
+// single line comment
+query Q4 {
+    description: "Select all Farmers called Dan" // inline comment
+    statement: SELECT com.composer.Farmer WHERE (firstName=='Dan')
+}
+
+/**
+ * Multiline comment
+ */ 
+query Q5 {
+    description: "Select all Farmers called Dan Selman" // inline comment
+    statement: SELECT com.composer.Farmer WHERE (firstName=='Dan' AND lastName=='Selman')
+}
+
+query Q6{
+    description: "Select all farmers with first name called Dan by address property" 
+    statement: 
+        SELECT com.composer.Farmer
+            WHERE ((age < 50 OR firstName != 'Dan') AND (address.city.postcode!='London'))
+}
