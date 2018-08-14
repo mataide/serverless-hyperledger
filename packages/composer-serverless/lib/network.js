@@ -33,6 +33,8 @@ class Network {
    *
    */
   constructor(network, cardname) {
+    console.log('const: ', constants.NETWORK);
+
     let connectionOptions = {}
     if(constants.LAMBDA_TASK_ROOT) {
       connectionOptions = {
@@ -80,13 +82,26 @@ class Network {
    * @description Initalizes the LandRegsitry by making a connection to the Composer runtime
    * @return {Promise} A promise whose fullfillment means the initialization has completed
    */
+  async connect() {
+    try{
+      this.businessNetworkDefinition = await this.bizNetworkConnection.connect(this.cardname);
+      if (!this.businessNetworkDefinition) {
+        console.log("Error in network connection");
+        throw "Error in network connection";
+      }
+      return this.businessNetworkDefinition
+    }catch(error){
+      console.log(error);
+      throw error;
+    }
+  }
+
+  /**
+   * @description Initalizes the LandRegsitry by making a connection to the Composer runtime
+   * @return {Promise} A promise whose fullfillment means the initialization has completed
+   */
   async ping() {
     try{
-        this.businessNetworkDefinition = await this.bizNetworkConnection.connect(this.cardname);
-        if (!this.businessNetworkDefinition) {
-          console.log("Error in network connection");
-          throw "Error in network connection";
-        }
         return await this.bizNetworkConnection.ping();
     }catch(error){
       console.log(error);
