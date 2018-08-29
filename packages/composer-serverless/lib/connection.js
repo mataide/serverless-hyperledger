@@ -57,7 +57,7 @@ class Connection {
     this._doAllChecks().catch(err => { throw err })
   }
 
-  static async getInstance (network, cardname) {
+  static getInstance (network, cardname) {
     const instance = mapConnections.get(cardname)
     if (instance) {
       return instance
@@ -124,7 +124,7 @@ module.exports = {
   create (...args){
     return new Connection(...args)
   },
-  async getInstance (...args) {
+  getInstance (...args) {
     return Connection.getInstance(...args)
   }
 }

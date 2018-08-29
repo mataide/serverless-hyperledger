@@ -14,7 +14,7 @@ export async function respond (event, cb) {
   try {
     ncp.limit = 16;
     await ncp('.composer', '/tmp/.composer')
-    const instance = await getInstance('network', 'cardname')
+    const instance = getInstance('network', 'cardname')
     const network = new Network(instance)
     const result = await network.ping()
     return cb(null, Api.response(result))

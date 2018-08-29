@@ -98,7 +98,7 @@ let respond = exports.respond = (() => {
     try {
       ncp.limit = 16;
       yield ncp('.composer', '/tmp/.composer');
-      const instance = yield getInstance('network', 'cardname');
+      const instance = getInstance('network', 'cardname');
       const network = new Network(instance);
       const result = yield network.ping();
       return cb(null, _response.Api.response(result));
@@ -376,15 +376,13 @@ class Connection {
   }
 
   static getInstance(network, cardname) {
-    return _asyncToGenerator(function* () {
-      const instance = mapConnections.get(cardname);
-      if (instance) {
-        return instance;
-      }
-      const connection = new Connection(network, cardname);
-      mapConnections.set(cardname, connection);
-      return connection;
-    })();
+    const instance = mapConnections.get(cardname);
+    if (instance) {
+      return instance;
+    }
+    const connection = new Connection(network, cardname);
+    mapConnections.set(cardname, connection);
+    return connection;
   }
 
   _getOptionsByEnvironment() {
@@ -450,9 +448,7 @@ module.exports = {
     return new Connection(...args);
   },
   getInstance(...args) {
-    return _asyncToGenerator(function* () {
-      return Connection.getInstance(...args);
-    })();
+    return Connection.getInstance(...args);
   }
 };
 
