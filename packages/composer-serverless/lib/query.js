@@ -11,107 +11,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// Require abstract core class to setup connection attributes
+const AbstractCore = require('./core')
 
-// This is a model to Query Actions
-
-'use strict';
-
-const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
-const constants = {
-  // resources
-  NETWORK: process.env.NETWORK,
-  CARDNAME: process.env.CARDNAME,
-  LAMBDA_TASK_ROOT: process.env.LAMBDA_TASK_ROOT
-}
-
-/** Class for the Query*/
-class Query {
-
+/**
+ * @name Query
+ * @description This is a model to Query Actions
+ */
+class Query extends AbstractCore {
   /**
-   * Need to have the mapping from bizNetwork name to the URLs to connect to.
-   * bizNetwork nawme will be able to be used by Composer to get the suitable model files.
-   *
+   * @param {Connection} connection The singleton connection
    */
-  constructor(network, cardname) {
-    let connectionOptions = {}
-    if(constants.LAMBDA_TASK_ROOT) {
-      connectionOptions = {
-        wallet : {
-          type: 'composer-wallet-filesystem',
-          options : {
-            storePath : '/tmp/.composer'
-          }
-        }
-      };
-    } else {
-      connectionOptions = {
-        wallet : {
-          type: 'composer-wallet-filesystem',
-          options : {
-            storePath : process.cwd() + '/.composer'
-          }
-        }
-      };
-    }
-    this.bizNetworkConnection = new BusinessNetworkConnection(connectionOptions);
-
-    this.network = network
-
-    if(constants.NETWORK) {
-      this.network = constants.NETWORK
-    }
-
-    if (typeof this.network === 'undefined') {
-      throw new Error('network is undefined');
-    }
-
-    this.cardname = cardname
-
-    if(constants.CARDNAME) {
-      this.cardname = constants.CARDNAME
-    }
-
-    if (typeof this.cardname === 'undefined') {
-      throw new Error('cardname is undefined');
-    }
+  constructor (connection) {
+    super(connection)
   }
 
   /**
    * @description Initalizes the LandRegsitry by making a connection to the Composer runtime
    * @return {Promise} A promise whose fullfillment means the initialization has completed
    */
-  async get(asset, assetId, value) {
-    try{
-        this.businessNetworkDefinition = await this.bizNetworkConnection.connect(this.cardname);
-        if (!this.businessNetworkDefinition) {
-          console.log("Error in network connection");
-          throw "Error in network connection";
-        }
-        const query = this.bizNetworkConnection.buildQuery(`SELECT ${this.network}.${asset} WHERE (${assetId} == _$inputValue)`);
-        return await this.bizNetworkConnection.query(query, { inputValue: value })
-    }catch(error){
-      console.log(error);
-      throw error;
-    }
+  async get (asset, assetId, value) {
+    const query = this.bizNetworkConnection.buildQuery(
+      `SELECT ${this.network}.${asset} WHERE (${assetId} == _$inputValue)`
+    );
+    return await this.bizNetworkConnection.query(query, { inputValue: value })
   }
 
   /**
    * @description Initalizes the LandRegsitry by making a connection to the Composer runtime
    * @return {Promise} A promise whose fullfillment means the initialization has completed
    */
-  async queryByResource(resource, filter) {
-    try{
-      this.businessNetworkDefinition = await this.bizNetworkConnection.connect(this.cardname);
-      if (!this.businessNetworkDefinition) {
-        console.log("Error in network connection");
-        throw "Error in network connection";
-      }
-      return await this.bizNetworkConnection.query(resource, filter)
-    }catch(error){
-      console.log(error);
-      throw error;
-    }
+  async queryByResource (resource, filter) {
+    return await this.bizNetworkConnection.query(resource, filter)
   }
-
 }
+
 module.exports = Query;

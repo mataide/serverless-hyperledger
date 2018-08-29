@@ -2,7 +2,7 @@
   "name": "composer-serverless",
   "version": "0.1.5-beta2",
   "description": "Composer Serverless Core Models",
-  "main": "lib/index.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

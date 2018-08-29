@@ -20,6 +20,7 @@
     "ajv": "^6.4.0",
     "composer-client": "^0.19.13",
     "composer-connector-hlfv1": "^0.19.13",
+    "lodash": "^4.17.10",
     "ncp": "^2.0.0",
     "source-map-support": "^0.5.5"
   },

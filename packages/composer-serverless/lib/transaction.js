@@ -11,104 +11,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// Require abstract core class to setup connection attributes
+const AbstractCore = require('./core')
+const { isPlainObject } = require('lodash')
 
-// This is a model to Transaction Actions
-
-'use strict';
-
-const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
-const constants = {
-  // resources
-  NETWORK: process.env.NETWORK,
-  CARDNAME: process.env.CARDNAME,
-  LAMBDA_TASK_ROOT: process.env.LAMBDA_TASK_ROOT
-}
-
-/** Class for the Transaction*/
-class Transaction {
-
+/** 
+ * @name Transaction
+ * @description This is a model to Transaction Actions
+ */
+class Transaction extends AbstractCore {
   /**
-   * Need to have the mapping from bizNetwork name to the URLs to connect to.
-   * bizNetwork nawme will be able to be used by Composer to get the suitable model files.
-   *
+   * @param {Connection} connection The singleton connection
    */
-  constructor(network, cardname) {
-    let connectionOptions = {}
-    if(constants.LAMBDA_TASK_ROOT) {
-      connectionOptions = {
-        wallet : {
-          type: 'composer-wallet-filesystem',
-          options : {
-            storePath : '/tmp/.composer'
-          }
-        }
-      };
-    } else {
-      connectionOptions = {
-        wallet : {
-          type: 'composer-wallet-filesystem',
-          options : {
-            storePath : process.cwd() + '/.composer'
-          }
-        }
-      };
-    }
-    this.bizNetworkConnection = new BusinessNetworkConnection(connectionOptions);
-
-    this.network = network
-
-    if(constants.NETWORK) {
-      this.network = constants.NETWORK
-    }
-
-    if (typeof this.network === 'undefined') {
-      throw new Error('network is undefined');
-    }
-
-    this.cardname = cardname
-
-    if(constants.CARDNAME) {
-      this.cardname = constants.CARDNAME
-    }
-
-    if (typeof this.cardname === 'undefined') {
-      throw new Error('cardname is undefined');
-    }
+  constructor (connection) {
+    super(connection)
   }
-
 
   /**
    * @description Initalizes the LandRegsitry by making a connection to the Composer runtime
    * @return {Promise} A promise whose fullfillment means the initialization has completed
    */
-  async submit(resource, method) {
-      this.businessNetworkDefinition = await this.bizNetworkConnection.connect(this.cardname);
-      if (!this.businessNetworkDefinition) {
-        console.log("Error in network connection");
-        throw "Error in network connection";
-      }
+  async submit (resource, method) {
+    let factory = this.businessNetworkDefinition.getFactory();
+    let transaction = factory.newTransaction(this.network, method);
 
-      let factory        = this.businessNetworkDefinition.getFactory();
-      let transaction    = factory.newTransaction(this.network, method);
-
-      //For Concept Objects add Key Ex. {$concept: "<Asset Name>"}
-      Object.entries(resource).map((key, value) => {
-        if(this.isObject(key[1])) {
-          if(key[1].$concept) {
-            let concept = factory.newConcept(this.network, key[1].$concept);
-            delete key[1].$concept
-            Object.assign(concept, key[1])
-            resource[key[0]] = concept
-          }
+    //For Concept Objects add Key Ex. {$concept: "<Asset Name>"}
+    Object.entries(resource).map((key, value) => {
+      if(this.isObject(key[1])) {
+        if(key[1].$concept) {
+          let concept = factory.newConcept(this.network, key[1].$concept);
+          delete key[1].$concept
+          Object.assign(concept, key[1])
+          resource[key[0]] = concept
         }
-      });
-      Object.assign(transaction, resource)
+      }
+    });
+    Object.assign(transaction, resource)
 
-      const concept = await this.bizNetworkConnection.submitTransaction(transaction)
-      return concept
+    const concept = await this.bizNetworkConnection.submitTransaction(transaction)
+    return concept
   }
 
-  isObject(o) {
+  isObject (o) {
+    return isPlainObject(o)
     return o !== null && typeof o === 'object' && Array.isArray(o) === false;
   }
 

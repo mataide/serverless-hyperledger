@@ -77,20 +77,20 @@ package:
     - .git/**
 
 functions:
-  hyperledgerTeste:
-    description: "hyperledger teste"
-    handler: api/hyperledger/teste/handler.default
-    memorySize: 256
-    timeout: 30
-    events:
-      - http:
-          path: hyperledger/teste
-          method: POST
-          cors: true # Turn on CORS for this endpoint, but don't forget to return the right header in your response
-          private: true
-          headers:
-            - Content-Type
-            - X-Api-Key
+  # hyperledgerTeste:
+  #   description: "hyperledger teste"
+  #   handler: api/hyperledger/teste/handler.default
+  #   memorySize: 256
+  #   timeout: 30
+  #   events:
+  #     - http:
+  #         path: hyperledger/teste
+  #         method: POST
+  #         cors: true # Turn on CORS for this endpoint, but don't forget to return the right header in your response
+  #         private: true
+  #         headers:
+  #           - Content-Type
+  #           - X-Api-Key
 
   networkPing:
     description: "Network Ping"
