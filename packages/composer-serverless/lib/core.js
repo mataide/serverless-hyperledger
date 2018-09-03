@@ -10,6 +10,7 @@ module.exports = class AbstractCore {
       network,
       cardname
     } = connection
+    this._connection = connection
     this.bizNetworkConnection = bizNetworkConnection
     this.businessNetworkDefinition = businessNetworkDefinition
     this.network = network
