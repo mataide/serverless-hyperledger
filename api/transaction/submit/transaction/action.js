@@ -1,26 +1,23 @@
 'use strict'
 
-const Transaction = require('../../../../packages/composer-serverless/lib/transaction')
+const {
+  Transaction
+} = require('../../../../packages/composer-serverless')
 import { Api } from '../../../../lib/response'
-var ncp = require('ncp').ncp;
 
 // Multi - Create''
-export function respond (event, cb) {
+export async function respond(connection, event, cb) {
 
-  const data = JSON.parse(event.body)
-
-  ncp.limit = 16;
-  ncp('.composer', '/tmp/.composer', function (err) {
-    if (err) {
-      return cb(null, Api.errors(200, {5: err['message']}))
-    }
-    console.log('done!');
-    let transaction = new Transaction()
-    transaction.submit(data, 'CreateWallet').then(result => {
-      return cb(null, Api.response(result))
-    }).catch(err => {
-      return cb(null, Api.errors(200, {5: err['message']}))
-    })
-  });
+  try {
+    const data = JSON.parse(event.body)
+    const TransactionType = 'CreateWallet'
+    const transaction = new Transaction(connection)
+    const result = await transaction.submit(data, TransactionType)
+    return cb(null, Api.response(result))
+  } catch (err) {
+    return cb(null, Api.errors(200, {
+      5: err['message']
+    }))
+  }
 }
 

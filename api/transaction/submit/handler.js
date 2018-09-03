@@ -1,6 +1,11 @@
 'use strict'
 import * as post from './transaction/action'
 
+import {
+  Connection,
+} from '../../../packages/composer-serverless'
+
+const ConnectionInstance = Connection.getInstance()
 /**
  * Serverless Module: Lambda Handler
  * - Your lambda functions should be a thin wrapper around your own separate
@@ -9,12 +14,16 @@ import * as post from './transaction/action'
  */
 
 // Require Logic
-export default (event, context) => {
+export default async (event, context) => {
   let behavior = event.requestContext.httpMethod
+  const cbFactory = (err, response) => {
+    return context.done(err, response)
+  }
   switch (behavior) {
     case 'POST':
-      return post.respond(event, (error, response) => {
-        return context.done(error, response)
-      })
+      console.log('Wait connection')
+      await ConnectionInstance.isReady()
+      console.log('Wait connection done')
+      return post.respond(ConnectionInstance, event, cbFactory)
   }
 }

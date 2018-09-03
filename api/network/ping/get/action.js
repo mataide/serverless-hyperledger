@@ -5,7 +5,6 @@ const {
 import { Api } from '../../../../lib/response'
 const { get } = require('lodash')
 
-
 export async function respond (connection, event, cb) {
   try {
     const network = new Network(connection)
