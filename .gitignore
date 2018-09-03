@@ -60,3 +60,6 @@ typings/
 .serverless
 .idea
 .composer
+
+#Webpack tmp files
+.webpack
