@@ -80,8 +80,9 @@ class Transaction extends AbstractCore {
           }
           // Otherwise (Primitives and ENUMs) return the response
           return response;
+        } else {
+          return new Error('Response error');
         }
-        return resource.getIdentifier();
       });
   }
 
