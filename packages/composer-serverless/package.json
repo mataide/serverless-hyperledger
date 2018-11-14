@@ -1,6 +1,6 @@
 {
   "name": "composer-serverless",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Composer Serverless Core Models",
   "main": "index.js",
   "scripts": {

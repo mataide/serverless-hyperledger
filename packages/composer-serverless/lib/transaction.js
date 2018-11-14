@@ -31,25 +31,58 @@ class Transaction extends AbstractCore {
    * @description Initalizes the LandRegsitry by making a connection to the Composer runtime
    * @return {Promise} A promise whose fullfillment means the initialization has completed
    */
-  async submit (resource, method) {
+  async submit (data, method) {
     let factory = this.businessNetworkDefinition.getFactory();
     let transaction = factory.newTransaction(this.network, method);
 
     //For Concept Objects add Key Ex. {$concept: "<Asset Name>"}
-    Object.entries(resource).map((key, value) => {
+    Object.entries(data).map((key, value) => {
       if(this.isObject(key[1])) {
         if(key[1].$concept) {
           let concept = factory.newConcept(this.network, key[1].$concept);
           delete key[1].$concept
           Object.assign(concept, key[1])
-          resource[key[0]] = concept
+          data[key[0]] = concept
         }
       }
     });
-    Object.assign(transaction, resource)
+    Object.assign(transaction, data)
 
-    const concept = await this.bizNetworkConnection.submitTransaction(transaction)
-    return concept
+    // For transactions, we submit the transaction for execution.
+    // Ensure we return the generated identifier, so that LoopBack can return
+    // the generated identifier back to the user.
+    return this.bizNetworkConnection.submitTransaction(transaction)
+      .then((response) => {
+
+        // Return the response for returning transactions
+        if (response) {
+
+          // If transactions returns a concept, convert to JSON the Resource
+          if (response instanceof Object && !(response instanceof Array)) {
+            return this.businessNetworkDefinition.getSerializer().toJSON(response);
+
+          } else if (response instanceof Array) {
+            // If transactions returns an array of concept, convert all Concepts to JSON
+            let conceptArray = [];
+
+            response.forEach(item => {
+              if (item instanceof Object) {
+                let obj = this.businessNetworkDefinition.getSerializer().toJSON(item);
+                if (obj) {
+                  conceptArray.push(obj);
+                }
+              } else {
+                conceptArray.push(item);
+              }
+            });
+
+            return conceptArray;
+          }
+          // Otherwise (Primitives and ENUMs) return the response
+          return response;
+        }
+        return resource.getIdentifier();
+      });
   }
 
   isObject (o) {
